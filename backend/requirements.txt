@@ -1,0 +1,18 @@
+fastapi==0.115.12
+uvicorn==0.30.1
+pydantic==2.8.2
+pydantic-settings==2.3.4
+cryptography==46.0.5    # For cryptography.hazmat AES-256-GCM
+tldextract==5.1.2       # For precise domain parsing
+dnspython==2.6.1        # For concurrent DNS resolution A/MX/TXT
+rapidfuzz==3.9.4        # For Levenshtein/Jaccard dedup
+celery==5.4.0           # Async workers
+redis==4.5.4            # Celery broker and rate limit caching
+asyncpg>=0.30.0
+greenlet>=3.1.1
+playwright>=1.44.0      # For visual forensic screenshots and redirect tracking
+SQLAlchemy==2.0.31
+alembic==1.13.1
+PyJWT==2.8.0
+httpx==0.27.0
+fastapi-limiter==0.1.5

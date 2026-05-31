@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ioc_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ioc_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ioc_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-ioc_platform}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ioc_admin} -d ${POSTGRES_DB:-ioc_platform}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ioc_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # SuperTokens core — handles JWT signing and user management.
+  # For local development, the frontend uses https://try.supertokens.com (the public demo).
+  # Uncomment this service for production deployments that need a self-hosted SuperTokens core.
+  #
+  # supertokens:
+  #   image: registry.supertokens.org/supertokens/supertokens-postgresql:latest
+  #   container_name: ioc_supertokens
+  #   ports:
+  #     - "3567:3567"
+  #   environment:
+  #     POSTGRESQL_CONNECTION_URI: "postgresql://${POSTGRES_USER:-ioc_admin}:${POSTGRES_PASSWORD:-ioc_dev_password}@db:5432/${POSTGRES_DB:-ioc_platform}"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+
+  # MinIO object storage — optional, used for evidence screenshots in cloud deployments.
+  # Not required for core IOC extraction and enrichment functionality.
+  #
+  # minio:
+  #   image: minio/minio
+  #   container_name: ioc_minio
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_dev_password}
+  #   command: server /data --console-address ":9001"
+  #   ports:
+  #     - "9000:9000"
+  #     - "9001:9001"
+  #   volumes:
+  #     - minio_data:/data
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+  # minio_data:
