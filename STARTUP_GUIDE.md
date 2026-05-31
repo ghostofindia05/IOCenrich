@@ -57,7 +57,19 @@ Run the setup script from the root project directory:
     ```
 
 ### 2. Launch Services
-Start Docker services:
+You can check prerequisites and start all services with a single command using the master script:
+*   **Windows:**
+    ```cmd
+    start-all.bat
+    ```
+*   **Linux / macOS:**
+    ```bash
+    chmod +x start-all.sh
+    ./start-all.sh
+    ```
+This utility automatically checks dependencies, starts Redis in the background if not active, and asks you whether to launch the servers in **Development** or **Production** mode.
+
+Alternatively, you can start Docker services manually:
 ```bash
 docker compose up -d
 ```
@@ -66,7 +78,7 @@ Ensure migrations are up to date:
 *   **Windows:** `cd backend && venv\Scripts\activate && alembic upgrade head && cd ..`
 *   **Linux/macOS:** `cd backend && source venv/bin/activate && alembic upgrade head && cd ..`
 
-Open three terminal sessions to run:
+Or launch each service in its own terminal session:
 
 ### Development Mode
 

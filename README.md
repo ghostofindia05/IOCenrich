@@ -108,7 +108,19 @@ With PostgreSQL running, initialize the schema:
 
 ### 4. Launch Services
 
-Open three terminals and run the starting scripts to launch all parts of the application:
+#### Recommended: Start All Services with One Command
+You can check dependencies and launch all servers automatically with the master script:
+*   **Windows:**
+    ```cmd
+    start-all.bat
+    ```
+*   **Linux / macOS:**
+    ```bash
+    ./start-all.sh
+    ```
+
+#### Alternatively: Start Services in Separate Sessions
+Open three terminals and run the starting scripts to launch each component:
 
 #### Development Mode:
 
