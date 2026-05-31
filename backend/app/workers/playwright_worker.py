@@ -27,12 +27,7 @@ def capture_url_evidence(self, user_id: str, indicator_id: str, url: str) -> dic
     if warp_active:
         logger.info("[WARP] Proxy active: %s — URL capture will use Cloudflare IP.", get_proxy_url())
     else:
-        logger.error("[WARP] Proxy not available (%s) — ABORTING capture to prevent unproxied requests.", warp_msg)
-        return {
-            "initial_url": url,
-            "status": "failed",
-            "error": "Security abort: Cloudflare WARP proxy is required but unavailable."
-        }
+        logger.warning("[WARP] Proxy not available (%s) — Proceeding without proxy (fail-open) to allow capture.", warp_msg)
 
     evidence = {
         "initial_url": url,
