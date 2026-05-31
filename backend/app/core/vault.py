@@ -1,9 +1,12 @@
 import os
+import logging
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 from app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 def _get_kek(user_id: str) -> bytes:
     # Use PBKDF2HMAC to derive the Key Encryption Key (KEK) from the Master Key
@@ -41,20 +44,25 @@ def encrypt_api_key(api_key: str, user_id: str) -> str:
 
 def decrypt_api_key(encrypted_hex: str, user_id: str) -> str:
     """Decrypts a previously encrypted API key using Envelope Encryption."""
-    kek = _get_kek(user_id)
-    combined = bytes.fromhex(encrypted_hex)
-    
-    nonce_kek = combined[:12]
-    ciphertext_dek = combined[12:60]
-    nonce_dek = combined[60:72]
-    ciphertext_secret = combined[72:]
-    
-    # 1. Decrypt DEK with KEK
-    aesgcm_kek = AESGCM(kek)
-    dek = aesgcm_kek.decrypt(nonce_kek, ciphertext_dek, None)
-    
-    # 2. Decrypt secret with DEK
-    aesgcm_dek = AESGCM(dek)
-    decrypted = aesgcm_dek.decrypt(nonce_dek, ciphertext_secret, None)
-    
-    return decrypted.decode('utf-8')
+    try:
+        kek = _get_kek(user_id)
+        combined = bytes.fromhex(encrypted_hex)
+        
+        nonce_kek = combined[:12]
+        ciphertext_dek = combined[12:60]
+        nonce_dek = combined[60:72]
+        ciphertext_secret = combined[72:]
+        
+        # 1. Decrypt DEK with KEK
+        aesgcm_kek = AESGCM(kek)
+        dek = aesgcm_kek.decrypt(nonce_kek, ciphertext_dek, None)
+        
+        # 2. Decrypt secret with DEK
+        aesgcm_dek = AESGCM(dek)
+        decrypted = aesgcm_dek.decrypt(nonce_dek, ciphertext_secret, None)
+        
+        return decrypted.decode('utf-8')
+    except Exception as e:
+        logger.warning(f"Failed to decrypt API key for user {user_id}. Decryption key may have been rotated. Error: {e}")
+        return ""
+
