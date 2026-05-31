@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         const cookies = Object.fromEntries(request.cookies.getAll().map(c => [c.name, c.value]));
         
         const baseRequest = new PreParsedRequest({
-            method: request.method,
+            method: request.method.toLowerCase() as any,
             url: request.url,
             query: query,
             headers: request.headers,
