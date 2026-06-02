@@ -136,7 +136,7 @@ async def get_url_evidence(
     filepath = (safe_dir / f"{indicator_id}.png").resolve()
 
     # [H-5] Reject any path that escapes the evidence directory
-    if not str(filepath).startswith(str(safe_dir) + "/"):
+    if not filepath.is_relative_to(safe_dir):
         raise HTTPException(status_code=400, detail="Invalid indicator ID")
 
     if not filepath.exists():
