@@ -38,9 +38,9 @@ else
 fi
 
 # ── Run DB migrations ────────────────────────────────────────
-echo -e "${BLUE}[INFO] Running database migrations (alembic upgrade head)...${NC}"
+echo -e "${BLUE}[INFO] Running database migrations (python migrate.py)...${NC}"
 cd backend
-alembic upgrade head || echo -e "${YELLOW}[WARN] Migration failed. The database may be out of sync.${NC}"
+python migrate.py || echo -e "${YELLOW}[WARN] Migration failed. The database may be out of sync.${NC}"
 cd ..
 
 # ── Start Uvicorn ────────────────────────────────────────────

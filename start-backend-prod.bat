@@ -30,9 +30,9 @@ if errorlevel 1 (
 )
 
 :: ── Run DB migrations ────────────────────────────────────────
-echo [INFO] Running database migrations (alembic upgrade head)...
+echo [INFO] Running database migrations (python migrate.py)...
 cd backend
-alembic upgrade head
+venv\Scripts\python.exe migrate.py
 if errorlevel 1 (
     echo [WARN]  Migration failed. The database may be out of sync.
 )
